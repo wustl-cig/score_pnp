@@ -1,0 +1,60 @@
+machinesetup:
+  gpu_idx: 1                                                                # Attention 1
+  save_dir: ./experiment_result                                             # Attention 2: The path where you save your results         
+
+data:
+  name: imagenet
+  dir: ./data/single_image/                                                 # Attention 3: The path of testset [single_image/hundred_images]
+  
+plugandplay_hyperparams:                                                    # Attention 4: Possible customization for your own Langevin dynamics (leave it when you only want to reproduce results)
+  iterative_algorithms: pnpadmm
+  max_iter: 101
+  denoising_strength_sigma_at_begin: 2.
+  denoising_strength_sigma_at_end: 2.
+  lambda_: N/A
+  gamma: 0.97097
+  zeta: N/A
+  denoiser_network_type: dncnn
+  save_image: true
+
+measurement:                                                                # Attention 5: Deblurring problem setting (leave it when you only want to reproduce results)
+  operator:
+    name: deblur
+    in_shape: !!python/list [1, 3, 256, 256]
+    kernel_index: 7             
+    kernel_dir: ./data/blur_kernels                                               # Attention 6: The path of the kernel
+  noise:
+    name: gaussian
+    sigma: 0.02
+
+model:
+  pretrained_check_point: ./pretrained_models/dncnn/dncnn_sigma2_color.pth  # Attention 7: The path where you save your pretrained denoiser (Either DnCNN / DRUNet / Diffusion model)
+  noise_perturbation_type: vp
+  image_size: 256
+  num_channels: 256
+  num_res_blocks: 2
+  channel_mult: ""
+  learn_sigma: True
+  class_cond: False
+  use_checkpoint: False
+  attention_resolutions: 32,16,8
+  num_heads: 4
+  num_head_channels: 64
+  num_heads_upsample: -1
+  use_scale_shift_norm: True
+  dropout: 0.0
+  resblock_updown: True
+  use_fp16: False
+  use_new_attention_order: False
+
+vp_diffusion:                                                 # Attention 7: All specifications about VP diffusion model (leave it when you use the same pretrained model)
+  sampler: ddpm
+  steps: 1000
+  timestep_respacing: 1000
+  beta_at_clean: 0.0001
+  noise_schedule: linear
+  model_mean_type: epsilon
+  model_var_type: learned_range
+  dynamic_threshold: False
+  clip_denoised: True
+  rescale_timesteps: False
