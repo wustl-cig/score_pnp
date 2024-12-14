@@ -764,6 +764,9 @@ class UNetModel(nn.Module):
         timesteps = th.tensor([timesteps] * x.shape[0], device=x.device)
         alphas = th.tensor(alphas)
 
+        # * Necessary scaling for the input.
+        x = th.sqrt(alphas) * x
+
         hs = []
         emb = self.time_embed(timestep_embedding(timesteps, self.model_channels))
         
