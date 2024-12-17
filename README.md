@@ -7,7 +7,7 @@
 ![result-git2](./figures/super_resolution.gif)
 -->
 
-[[arXiv]](https://arxiv.org/)
+[[arXiv]]([https://arxiv.org/](https://arxiv.org/abs/2412.11108))
 
 ![cover-img](./figures/cover.png)
 
