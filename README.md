@@ -99,7 +99,16 @@ We adopt the code structure from [Deepinverse repo](https://deepinv.github.io/de
 ## Citation
 
 ```
-@inproceedings{
-}
+@article{park2024pnpscore,
+	  title={Plug-and-Play Priors as a Score-Based Method},
+	  author={Park, Chicago Y.
+    and Yuyang Hu
+		and McCann, Michael T.
+		and Garcia-Cardona, Cristina
+		and Wohlberg, Brendt
+		and Kamilov, Ulugbek S.},
+	  journal={arXiv preprint arXiv:2412.11108},
+	  year={2024}
+	}
 ```
 
