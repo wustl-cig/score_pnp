@@ -92,6 +92,14 @@ first_argparse.py                  # Read yaml file / set forward operator and d
 └────────── second_diffpir.py      # DiffPIR operation
 ```
 
+<h2 style="color:red;">Troubleshooting</h2>
+
+```diff
+! If you encounter any issues, feel free to reach out via email at chicago@wustl.edu. 
+```
+
+
+
 ## Code references
 
 We adopt the code structure from [Deepinverse repo](https://deepinv.github.io/deepinv/index.html).
