@@ -221,7 +221,7 @@ class FixedPoint(nn.Module):
                     ``metrics`` the computed along the iterations if ``compute_metrics`` is ``True`` or ``None``
                     otherwise.
         """
-        # compute_metrics = False
+
         X = (
             self.init_iterate_fn(*args, F_fn=self.iterator.F_fn)
             if self.init_iterate_fn
@@ -254,23 +254,12 @@ class FixedPoint(nn.Module):
                 **kwargs,
             )
 
-            # if self.check_iteration:
-            # print(f"[check_iteration] it: {it}")
-            # print(f"metrics:{metrics}")
-            # if it % 2 == 0
             metrics = (
             self.update_metrics_fn(metrics, X_prev, X, x_gt=x_gt)
             if self.update_metrics_fn and compute_metrics
             else None
             )
-            # print(f"metrics: {metrics}")
-            # print(f"[{it}] (metrics['psnr']): {metrics['psnr'][0]}")
-            # print(f"[{it}] (metrics['psnr']): {len(metrics['psnr'][0])}")
-            # print(f"[{it}] (metrics['residual']): {len(metrics['residual'][0])}")
-            # print(f"[{it}] (metrics['cost']): {len(metrics['cost'][0])}")
-            # print(f"[{it}] len(metrics[1]): {len(metrics[1])}")
-            # print(f"[{it}] len(metrics[2]): {len(metrics[2])}")
-            # metrics = None
+
             if (
                 self.early_stop
                 and (self.check_conv_fn is not None)
@@ -279,10 +268,7 @@ class FixedPoint(nn.Module):
             ):
                 raise ValueError(f"it: {it}")
                 break
-                # it += 1
-        # raise ValueError(f"it: {it}")
-        # metrics['psnr'][0] = metrics['psnr'][0][::2]
-        # raise ValueError(f"[{it}] (metrics['psnr']): {len(metrics['psnr'][0])}")
+
 
         return X, metrics
 
@@ -293,10 +279,8 @@ class FixedPoint(nn.Module):
         )
         cur_prior = self.update_prior_fn(it) if self.update_prior_fn else None
         X_prev = X
-        # print(f"X: {X}")
+
         X = self.iterator(X_prev, cur_data_fidelity, cur_prior, cur_params, *args)
-        # raise ValueError(f"X: {X}")
-        # raise ValueError(f"fixed_point.py self.anderson_acceleration: {self.anderson_acceleration}")
         
         if self.anderson_acceleration:
             X = self.anderson_acceleration_step(
@@ -315,6 +299,5 @@ class FixedPoint(nn.Module):
         self.check_iteration = (
             self.check_iteration_fn(X_prev, X) if self.check_iteration_fn else True
         )
-        # print(f"X.shape: {X.shape}")
-        # raise ValueError()
+
         return X if self.check_iteration else X_prev
