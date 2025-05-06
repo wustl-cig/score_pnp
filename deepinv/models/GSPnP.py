@@ -11,34 +11,9 @@ class StudentGrad(nn.Module):
         self.score = score
 
     def forward(self, x, sigma):
-        # print(f"sigma: {sigma}")
+
         return self.model(x, sigma)
-    """
-    def forward(self, x, sigma):
-        gpu = 3
-        # device = dinv.utils.get_freer_gpu() if torch.cuda.is_available() else "cpu"
-        device_str = f"cuda:{gpu}" if torch.cuda.is_available() else 'cpu'
-        device = torch.device(device_str)
-        # raise ValueError(f"sigma: {sigma} / type:{type(sigma)}")
-        # sigma = sigma.cpu()
-        # print(f"sigma: {sigma}")
-        if isinstance(sigma, torch.Tensor):
-            sigma_float = float(sigma.item())
-            # raise ValueError()
-        else:
-            sigma_float = sigma
-        # time_corresponding_sigma_denoiser, alphas_corresponding_sigma_denoiser = get_noiselevel_alphas_timestep(0.06, beta_at_clean=0.0001, denoiser_network_type = "vp_score", num_diffusion_timesteps = 1000, last_time_step = 0)
-        time_corresponding_sigma_denoiser, alphas_corresponding_sigma_denoiser = get_noiselevel_alphas_timestep(sigma, beta_at_clean=0.0001, denoiser_network_type = "vp_score", num_diffusion_timesteps = 1000, last_time_step = 0)
-        time_corresponding_sigma_denoiser = torch.tensor([time_corresponding_sigma_denoiser] * x.shape[0], device=device)
-        alphas_corresponding_sigma_denoiser = torch.tensor(alphas_corresponding_sigma_denoiser)
-        print(f"time_corresponding_sigma_denoiser: {time_corresponding_sigma_denoiser}")
-        # raise ValueError(f"time_corresponding_sigma_denoiser: {time_corresponding_sigma_denoiser}\n sigma_denoiser: {sigma_denoiser}")
-        # model_dictionary = p_mean_variance(model = self.model, x = torch.sqrt(alphas_corresponding_sigma_denoiser) * (x), t = time_corresponding_sigma_denoiser, alphas = alphas_corresponding_sigma_denoiser)
-        model_dictionary = p_mean_variance(model = self.score, x = torch.sqrt(alphas_corresponding_sigma_denoiser) * (x), t = time_corresponding_sigma_denoiser, alphas = alphas_corresponding_sigma_denoiser)
-        model_output = model_dictionary['x_hat_MMSE']
-        
-        return model_output
-    """
+
 
 
 class GSPnP(nn.Module):
