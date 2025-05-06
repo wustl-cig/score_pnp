@@ -903,47 +903,46 @@ def get_named_noise_sigma(beta_at_clean, schedule_name = "linear", num_diffusion
         raise NotImplementedError(f"unknown beta schedule: {schedule_name}")
 
 
-# ! HERE, I add my function
 def get_noiselevel_alphas_timestep(noise_level_to_get_time, beta_at_clean, denoiser_network_type, num_diffusion_timesteps = 1000, last_time_step = 0, previous_time_idx_in_list = -1):
     if denoiser_network_type == "vp_score":
         scale = 1000 / num_diffusion_timesteps
         assert scale == 1
-
+        # ------------
+        # (Prep step 1) Define diffusion noise schedule
+        # ------------
         beta_start = scale * beta_at_clean
         beta_end = scale * 0.02
         beta_array = np.linspace(beta_start, beta_end, num_diffusion_timesteps, dtype=np.float64) # 999 to 0
         alpha_array = 1 - beta_array
         alphas_array = np.cumprod(alpha_array, axis=0)
-
-        # ! HERE might require num_tween_steps with certain values
-        # num_tween_steps = 2000
-        # num_tween_steps = 1000
         
-        # discrete_steps = num_tween_steps
+        # ------------
+        # (Prep step 2) Define discrete_steps to finely divide the diffusion timeline T, enabling accurate mapping from a given noise level to its corresponding time step.
+        # ------------
         discrete_steps = 1000000
         extended_length = discrete_steps
-        # min_distance_time_idx = int(discrete_steps*0.75)
         min_distance_time_idx = 0 
         assert discrete_steps >= extended_length
-
         new_indices = np.linspace(0, len(alphas_array) - 1, discrete_steps)
         extended_alphas_array = np.interp(new_indices, np.arange(len(alphas_array)), alphas_array)
-        
+        # ------------
+        # (Prep step 3) The line below is defining the noise schedule given diffusion scheduling.
+        # ------------
         denoiser_noise_sigma_array = np.sqrt((1-alphas_array)/(alphas_array))
         extended_denoiser_noise_sigma_array = np.sqrt((1-extended_alphas_array)/(extended_alphas_array))
         extended_denoiser_time_array = np.linspace(0, num_diffusion_timesteps - 1, discrete_steps)
         extended_time_array = np.linspace(0, num_diffusion_timesteps - 1, extended_length)
         
-        # min_distance = 10000
         matching_indicator = 1
         matching_time = 0
         tolerance = 10
         min_distance = 10000
-        
-        # print(f"extended_denoiser_noise_sigma_array[::15]: {extended_denoiser_noise_sigma_array[::15]}")
+
+        # ------------
+        # (Prep step 4) In PnP or RED, where the denoising noise schedule may vary gradually, the else block improves efficiency by reusing previous_time_idx_in_list to avoid scanning the entire schedule. The if block is suitable for fixed noise levels.
+        # ------------
         if previous_time_idx_in_list == -1:
             for i in range(min_distance_time_idx, len(extended_denoiser_noise_sigma_array)):
-            # for i in range(len(extended_denoiser_noise_sigma_array)-1, min_distance_time_idx, -1):
                 looped_noise = extended_denoiser_noise_sigma_array[i]
                 if np.isclose(looped_noise, noise_level_to_get_time, atol=tolerance):
                     if abs(looped_noise - noise_level_to_get_time) < min_distance:
@@ -955,13 +954,8 @@ def get_noiselevel_alphas_timestep(noise_level_to_get_time, beta_at_clean, denoi
                     else:
                         break
         else:
-            # for i, looped_noise in enumerate(extended_denoiser_noise_sigma_array):
-            # for i in range(previous_time_idx_in_list, len(extended_denoiser_noise_sigma_array)):
             for i in range(previous_time_idx_in_list, -1, -1):
-                # print(f"[tweedie_utility] i: {i}")
                 looped_noise = extended_denoiser_noise_sigma_array[i]
-                # print(f"looped_noise: {looped_noise}")
-                # print(f"noise_level_to_get_time: {noise_level_to_get_time}")
                 if np.isclose(looped_noise, noise_level_to_get_time, atol=tolerance):
                     if abs(looped_noise - noise_level_to_get_time) < min_distance:
                         min_distance = abs(looped_noise - noise_level_to_get_time)
@@ -970,20 +964,14 @@ def get_noiselevel_alphas_timestep(noise_level_to_get_time, beta_at_clean, denoi
                         min_alphas = extended_alphas_array[i]
                         matching_indicator = 1
                     else:
-                        # raise ValueError(f"abs(looped_noise - noise_level_to_get_time): {abs(looped_noise - noise_level_to_get_time)}\natol:{tolerance}")
                         break
-        # raise ValueError(f"min_distance_time: {min_distance_time} / min_distance_time_idx: {min_distance_time_idx}")
         
-        # extended_time_array
         assert int(extended_time_array[-1]) == num_diffusion_timesteps-1
 
         time_idx_array =  np.linspace(0, extended_length - 1, extended_length).astype(int)
         time_array = extended_denoiser_time_array
         time_array = np.where(extended_denoiser_time_array <= last_time_step, last_time_step, extended_denoiser_time_array)
         
-        # raise ValueError(f"min_alphas: {min_alphas}")
-        
-        # return extended_denoiser_noise_sigma_array, extended_alphas_array, time_array, time_idx_array
         return min_distance_time, min_alphas, min_distance_time_idx
     else:
         raise ValueError("Not yet to be implemented")
