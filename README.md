@@ -119,6 +119,8 @@ We adopt the code structure from [Deepinverse repo](https://deepinv.github.io/de
 
 ## Citation
 
+If you find our work useful, please consider citing
+
 ```
 @article{park2024scorepnp,
 	  title={Plug-and-Play Priors as a Score-Based Method},
