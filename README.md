@@ -92,6 +92,19 @@ first_argparse.py                  # Read yaml file / set forward operator and d
 └────────── second_diffpir.py      # DiffPIR operation
 ```
 
+## 🔑 Core Logic for Score-Based Methods
+
+These two components are central to applying parameter-matched denoising in our framework:
+
+```python
+# Find the diffusion timestep corresponding to the desired noise level(s) to denoise.
+util.tweedie_utility.get_noiselevel_alphas_timestep
+
+# Performs score-based denoising using parameter matching
+guided_diffusion.unet.UNetModel.forward
+```
+
+
 <h2 style="color:red;">Troubleshooting</h2>
 
 ```diff
@@ -110,7 +123,7 @@ We adopt the code structure from [Deepinverse repo](https://deepinv.github.io/de
 @article{park2024scorepnp,
 	  title={Plug-and-Play Priors as a Score-Based Method},
 	  author={Park, Chicago Y.
-    and Yuyang Hu
+		and Yuyang Hu
 		and McCann, Michael T.
 		and Garcia-Cardona, Cristina
 		and Wohlberg, Brendt
