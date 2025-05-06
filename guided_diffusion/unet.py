@@ -758,20 +758,23 @@ class UNetModel(nn.Module):
         assert (y is not None) == (
             self.num_classes is not None
         ), "must specify y if and only if the model is class-conditional"
-        # Parameter matching function
+
+        # ------------
+        # (Parameter matching step 1) Find the timestep corresponding to the desired noise level(s), which can be a single value or a sequence.
+        # ------------
         timesteps, alphas, previous_time_idx_in_list = get_noiselevel_alphas_timestep(sigma, beta_at_clean=0.0001, denoiser_network_type = 'vp_score', num_diffusion_timesteps = 1000, last_time_step = 0, previous_time_idx_in_list = self.previous_time_idx_in_list)
         self.previous_time_idx_in_list = previous_time_idx_in_list
         timesteps = th.tensor([timesteps] * x.shape[0], device=x.device)
         alphas = th.tensor(alphas)
 
-        # * Necessary scaling for the input.
-        x = th.sqrt(alphas) * x
+        # ------------
+        # (Parameter matching step 2) Scale the input using the corresponding scaling factor c.
+        # ------------
+        c = th.sqrt(alphas)
+        x = c * x
 
         hs = []
         emb = self.time_embed(timestep_embedding(timesteps, self.model_channels))
-        
-        
-        # print(f"unet.py 3")
 
         if self.num_classes is not None:
             assert y.shape == (x.shape[0],)
