@@ -42,6 +42,8 @@ conda create -n Scorepnp python=3.9.19
 
 conda activate Scorepnp
 
+conda install -c conda-forge mpi4py mpich
+
 pip install -r requirements.txt
 ```
 
