@@ -134,7 +134,7 @@ If you find our work useful, please consider citing
 		and Kamilov, Ulugbek S.},
   booktitle={2025 IEEE International Conference on Image Processing (ICIP)},
   year={2025},
-  address={Anchorage, USA},
+  address={Anchorage, Alaska},
 }
 ```
 
