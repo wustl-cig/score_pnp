@@ -124,16 +124,17 @@ We adopt the code structure from [Deepinverse repo](https://deepinv.github.io/de
 If you find our work useful, please consider citing
 
 ```
-@article{park2024scorepnp,
-	  title={Plug-and-Play Priors as a Score-Based Method},
+@inproceedings{park2024scorepnp,
+  title={Plug-and-Play Priors as a Score-Based Method},
 	  author={Park, Chicago Y.
 		and Yuyang Hu
 		and McCann, Michael T.
 		and Garcia-Cardona, Cristina
 		and Wohlberg, Brendt
 		and Kamilov, Ulugbek S.},
-	  journal={arXiv preprint arXiv:2412.11108},
-	  year={2024}
-	}
+  booktitle={2025 IEEE International Conference on Image Processing (ICIP)},
+  year={2025},
+  address={Anchorage, USA},
+}
 ```
 
